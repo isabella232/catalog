@@ -23,3 +23,90 @@ spec:
     - "@jspaleta"
     - "@thoward"
     - "@fguimond"
+  prompts:
+    - type: section
+      title: Configure Sensu Pipelines
+    - type: markdown
+      body: |
+        This integration collects host metrics and can issue alerts using metric threaholds. You can configure different Sensu pipelines to use to process metrics and alerts. 
+    - type: question
+      name: metrics_pipeline
+      required: false
+      input:
+        type: string
+        title: Metrics Pipeline
+        description: >-
+          How do you want to process metrics collected by this integration?
+        ref: core/v2/pipeline/metadata/name
+    - type: question
+      name: alerts_pipeline
+      required: false
+      input:
+        type: string
+        title: Alert Pipeline
+        description: >-
+          How do you want to be alerted for failures detected by this integration (e.g. Slack or Microsoft Teams)?
+        ref: core/v2/pipeline/metadata/name
+    - type: question
+      name: incidents_pipeline
+      required: false
+      input:
+        type: string
+        title: Incident Pipeline
+        description: >-
+          How do you want to process incidents for failures detected by this integration (e.g. Atlassian JIRA/ServiceDesk, or Pagerduty)?
+        ref: core/v2/pipeline/metadata/name
+    - type: section
+      title: Operational Check Configuration
+    - type: markdown
+      body: |
+        Select which optional metrics to enable.
+    - type: question
+      name: sumologic_compat
+      required: false
+      input:
+        type: string
+        default: "false"
+        title: Enable Sumo Logic dashboard compatible metrics 
+        description: >-
+          Generate additional metrics formated to integrate with existing Sumo Logic dashboards. 
+    - type: question
+      name: all_interfaces
+      required: false
+      input:
+        type: string
+        default: "false"
+        title: Enable interface="all" metrics
+        description: >-
+          Generate metrics summed over for all interfaces using the interface="all" tag 
+  resource_patches:
+    - resource:
+        api_version: core/v2
+        type: CheckConfig
+        name: network-interface-health
+      patches:
+        - path: /spec/env_vars/-
+          op: add
+          value: "NETWORK_INTERFACE_CHECKS_SUMOLOGIC_COMPAT=[[sumologic_compat]]"
+        - path: /spec/env_vars/-
+          op: add
+          value: "NETWORK_INTERFACE_CHECKS_SUM=[[all_interfaces]]"
+        - path: /spec/pipelines/-
+          op: add
+          value:
+            api_version: core/v2
+            type: Pipeline
+            name: "[[metrics_pipeline]]"
+        - path: /spec/pipelines/-
+          op: add
+          value:
+            api_version: core/v2
+            type: Pipeline
+            name: "[[alerts_pipeline]]"
+        - path: /spec/pipelines/-
+          op: add
+          value:
+            api_version: core/v2
+            type: Pipeline
+            name: "[[incidents_pipeline]]"
+
