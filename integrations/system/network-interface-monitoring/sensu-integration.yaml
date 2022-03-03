@@ -66,8 +66,11 @@ spec:
       required: false
       input:
         type: string
-        default: "false"
         title: Enable Sumo Logic dashboard compatible metrics 
+        enum:
+          - "false"
+          - "true"
+        default: "false"
         description: >-
           Generate additional metrics formated to integrate with existing Sumo Logic dashboards. 
     - type: question
@@ -75,6 +78,9 @@ spec:
       required: false
       input:
         type: string
+        enum:
+          - "false"
+          - "true"
         default: "false"
         title: Enable interface="all" metrics
         description: >-
