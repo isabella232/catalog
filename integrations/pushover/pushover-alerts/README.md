@@ -42,7 +42,7 @@ This integration does not produce any events that should be processed by an aler
 1. This integration uses [Handler Templating][handler-templating] for variable substitution.
 
 1. This integration places your pushover credentials directly into sensu configuration.
-In order to follow our reccomended security practices please reference the (sensu secrets documentation)[secret].
+In order to follow our recommended security practices please reference the (sensu secrets documentation)[secret].
 
 
 <!-- Links -->
